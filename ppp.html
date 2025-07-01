@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nyambek Top Up Diamond</title>
+    <style>
+        body {
+            background: #0d0d0d;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #00ff99;
+            color: black;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            margin: 30px auto;
+            background: #1c1c1c;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff99;
+        }
+        h2 {
+            color: #00ff99;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            width: 100%;
+            background: #00ff99;
+            color: black;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .price-list {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .price-list h3 {
+            margin-top: 0;
+            color: #00ff99;
+        }
+        .price-list table {
+            width: 100%;
+            text-align: left;
+            margin-top: 10px;
+        }
+        .price-list table th, .price-list table td {
+            padding: 5px;
+        }
+        #paymentSection {
+            display: none;
+            text-align: center;
+        }
+        .barcode {
+            margin: 20px auto;
+            background: white;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .note {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Nyambek Top Up Diamond</h1>
+</header>
+
+<div class="container">
+    <h2>Daftar Harga Diamond</h2>
+    <div class="price-list">
+        <h3>Mobile Legends</h3>
+        <table>
+            <tr><th>Paket</th><th>Harga</th></tr>
+            <tr><td>86 Diamond</td><td>Rp20.000</td></tr>
+            <tr><td>172 Diamond</td><td>Rp40.000</td></tr>
+            <tr><td>257 Diamond</td><td>Rp60.000</td></tr>
+        </table>
+    </div>
+
+    <h2>Form Top Up</h2>
+    <label for="product">Pilih Paket Diamond</label>
+    <select id="product">
+        <option value="">-- Pilih Paket --</option>
+        <option value="86 Diamond" data-price="20000">86 Diamond - Rp20.000</option>
+        <option value="172 Diamond" data-price="40000">172 Diamond - Rp40.000</option>
+        <option value="257 Diamond" data-price="60000">257 Diamond - Rp60.000</option>
+    </select>
+
+    <label for="gameId">ID Game</label>
+    <input type="text" id="gameId" placeholder="Masukkan ID Game Anda">
+
+    <label for="payment">Metode Pembayaran</label>
+    <select id="payment">
+        <option value="">-- Pilih Metode --</option>
+        <option value="Dana">Dana</option>
+        <option value="Indomaret">Indomaret</option>
+        <option value="Alfamart">Alfamart</option>
+    </select>
+
+    <button onclick="submitOrder()">Beli Sekarang</button>
+</div>
+
+<div class="container" id="paymentSection">
+    <h2>Instruksi Pembayaran</h2>
+    <p><strong>Paket:</strong> <span id="paketText"></span></p>
+    <p><strong>Harga:</strong> <span id="hargaText"></span></p>
+    <p><strong>ID Game:</strong> <span id="idText"></span></p>
+    <p><strong>Metode:</strong> <span id="metodeText"></span></p>
+
+    <div id="instruksiDana" style="display:none;">
+        <p>Silakan transfer ke Dana berikut:</p>
+        <p><strong>0857-0410-4995</strong></p>
+        <div class="barcode">
+            <img src="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012019061655871760" alt="QR Code" width="200" height="200">
+        </div>
+    </div>
+
+    <div id="instruksiIndoAlfa" style="display:none;" class="note">
+        <p>Silakan ke kasir <span id="kasirToko"></span> dan bilang:</p>
+        <p><strong>"Top Up Dana ke nomor 085704104995 atas nama Nyambek Official."</strong></p>
+        <p>Pastikan nominal sesuai dan simpan bukti pembayaran.</p>
+    </div>
+
+    <p>Setelah bayar, konfirmasi ke admin. Terima kasih!</p>
+</div>
+
+<script>
+function submitOrder() {
+    const product = document.getElementById('product');
+    const selectedOption = product.options[product.selectedIndex];
+    const paket = selectedOption.value;
+    const price = selectedOption.getAttribute('data-price');
+    const gameId = document.getElementById('gameId').value;
+    const payment = document.getElementById('payment').value;
+
+    if (!paket || !gameId || !payment) {
+        alert("Mohon lengkapi semua data!");
+        return;
+    }
+
+    document.querySelector(".container").style.display = "none";
+    document.getElementById("paymentSection").style.display = "block";
+
+    document.getElementById('paketText').innerText = paket;
+    document.getElementById('hargaText').innerText = "Rp" + parseInt(price).toLocaleString('id-ID');
+    document.getElementById('idText').innerText = gameId;
+    document.getElementById('metodeText').innerText = payment;
+
+    if (payment === "Dana") {
+        document.getElementById("instruksiDana").style.display = "block";
+    } else if (payment === "Indomaret" || payment === "Alfamart") {
+        document.getElementById("instruksiIndoAlfa").style.display = "block";
+        document.getElementById("kasirToko").innerText = payment;
+    }
+}
+</script>
+
+</body>
+</html>
